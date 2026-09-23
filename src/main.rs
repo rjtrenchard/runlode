@@ -2,9 +2,8 @@ use bevy::prelude::*;
 
 fn main() {
     App::new()
-    .add_systems(Startup, add_person)
-    .add_systems(Update, (hello_world, 
-        (greet_people, update_people, greet_people).chain()))
+    .add_plugins(DefaultPlugins)
+    .add_plugins(HelloPlugin)
     .run();
 }
 
@@ -16,6 +15,17 @@ fn add_person(mut commands: Commands) {
     commands.spawn( (Person, Name("Sir Lancelot".to_string())));
     commands.spawn( (Person, Name("King Arthur".to_string())));
     commands.spawn( (Person, Name("Elaina Proctor".to_string())));
+}
+
+
+pub struct HelloPlugin;
+
+impl Plugin for HelloPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_systems(Startup, add_person);
+        app.add_systems(Update, (hello_world, 
+        (greet_people, update_people, greet_people).chain()));
+    }
 }
 
 fn greet_people(query: Query<&Name, With<Person>>) {
